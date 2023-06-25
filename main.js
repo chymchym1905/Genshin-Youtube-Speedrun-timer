@@ -1,5 +1,7 @@
-var totaltime = 0.0; //time to be copied, in integer
+// const Big = require('big.js');
+var totaltime = new Big(0.0); //time to be copied, in integer
 var lastTime = 0; //the lastest result after compute time
+
 function compute() {
 
     // Initiate basic time variables
@@ -70,23 +72,20 @@ function addTime(){
 
     for (let component of words) {
         if (component.endsWith("h")) {
-            console.log(component);
-            let hours = parseFloat(component.split("h")[0]);
-            totaltime += hours * 3600;
+          let hours = new Big(component.split("h")[0]);
+          totaltime = totaltime.plus(hours.times(3600));
         } else if (component.endsWith("m")) {
-            console.log(component);
-            let minutes = parseFloat(component.split("m")[0]);
-            totaltime += minutes * 60;
+          let minutes = new Big(component.split("m")[0]);
+          totaltime = totaltime.plus(minutes.times(60));
         } else if (component.endsWith("ms")) {
-            console.log(component);
-            let milliseconds = parseFloat(component.split("ms")[0]); 
-            totaltime += milliseconds * 0.001;
+          let milliseconds = new Big(component.split("ms")[0]);
+          totaltime = totaltime.plus(milliseconds.times(0.001));
         } else if (component.endsWith("s")) {
-            console.log(component);
-            let seconds = parseFloat(component.split("s")[0]);
-            totaltime += seconds;   
+          let seconds = new Big(component.split("s")[0]);
+          totaltime = totaltime.plus(seconds);
         }
     }
+    console.log(totaltime);
 }
 
 function undoAdd(){
@@ -94,17 +93,17 @@ function undoAdd(){
 
     for (let component of words) {
         if (component.endsWith("h")) {
-        let hours = parseFloat(component.split("h")[0]);
-        totaltime -= hours * 3600;
-    } else if (component.endsWith("m")) {
-        let minutes = parseFloat(component.split("m")[0]);
-        totaltime -= minutes * 60;
-    } else if (component.endsWith("ms")) {
-        let milliseconds = parseFloat(component.split("ms")[0]);
-        totaltime -= milliseconds * 0.001;
-    } else if (component.endsWith("s")) {
-        let seconds = parseFloat(component.split("s")[0]);
-        totaltime -= seconds;
+            let hours = new Big(component.split("h")[0]);
+            totaltime = totaltime.minus(hours.times(3600));
+        } else if (component.endsWith("m")) {
+            let minutes = new Big(component.split("m")[0]);
+            totaltime = totaltime.minus(minutes.times(60));
+        } else if (component.endsWith("ms")) {
+            let milliseconds = new Big(component.split("ms")[0]);
+            totaltime = totaltime.minus(milliseconds.times(0.001));
+        } else if (component.endsWith("s")) {
+            let seconds = new Big(component.split("s")[0]);
+            totaltime = totaltime.minus(seconds);
         }
     }
     deleteLastLine();
@@ -121,10 +120,12 @@ function deleteLastLine() {
       textarea.value = textarea.value.slice(0, -2);
     }
 }
+
 function reset(){
     document.getElementById("totalTime").value = "";
     document.getElementById('totalTime').disabled = true;
     document.getElementById("copied").style.display = "none";
+    totaltime = Big(0.0);
 }
 
 
@@ -132,9 +133,9 @@ function reset(){
 function copyToClipboard() {
     document.getElementById("copied").style.display = "block";
     let content = totaltime;
-    content *= 1000;
+    content = content.times(1000);
     console.log(content)
-    navigator.clipboard.writeText(parseInt(content.toFixed(3).toString()))
+    navigator.clipboard.writeText(parseInt(content.toString()))
       .then(() => {
         document.getElementById("copied").textContent = 'Copied to clipboard: '+ parseInt(content);
       })
@@ -142,6 +143,10 @@ function copyToClipboard() {
         console.error('Failed to copy to clipboard:', error);
       });
   }
+
+const assign = (event) => {
+    lastTime = event.target.value;
+}
 
   
 

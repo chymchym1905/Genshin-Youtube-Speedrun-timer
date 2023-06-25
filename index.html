@@ -7,6 +7,7 @@
   <meta name="version" content="1.1.1" />
   <title>YouTube Frame Timer</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+  <script src='https://cdn.jsdelivr.net/npm/big.js@6.2.1/big.min.js'></script>
   <script src="main.js"></script>
 </head>
 
@@ -39,13 +40,13 @@
       <input type="text" id="endobj" style='width:100%' onchange='parseForTime(event)' />
     </p>
     <h3 id="video-time">Video Time</h3>
-    <button id="computeButton" onclick="compute()">Compute time</button>&nbsp;<input type="text" id="time" size="20" />
+    <button id="computeButton" onclick="compute()">Compute time</button>&nbsp;<input onchange="assign(event)" type="text" id="time" size="20" />
 
 
     
     <table style="left:0; transform: translateX(-2.5%);">
       <td rowspan="2" style="border-color: transparent;">
-        <textarea id="totalTime" cols="40" rows="6" disabled readonly></textarea>
+        <textarea id="totalTime" cols="40" rows="8" disabled readonly></textarea>
       </td>
 
       <td style="border-color: transparent;">
