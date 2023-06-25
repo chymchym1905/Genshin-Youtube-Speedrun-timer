@@ -1,3 +1,5 @@
+var totaltime = 0.0; //time to be copied, in integer
+var lastTime = 0; //the lastest result after compute time
 function compute() {
 
     // Initiate basic time variables
@@ -40,20 +42,108 @@ function compute() {
     let finalTime = hours.toString() + 'h ' + minutes.toString() + 'm ' + seconds.toString() + 's ' + milliseconds.toString() + 'ms';
     let modMessage = `Mod Message: Time starts at ${parseFloat(startFrame).toFixed(3)} and ends at ${parseFloat(endFrame).toFixed(3)} at ${frameRate} fps to get a final time of ${finalTime}.`;
     let credits = `Retimed using [yt-frame-timer](https://slashinfty.github.io/yt-frame-timer)`;
+    lastTime = finalTime;
     document.getElementById('time').value = finalTime;
     document.getElementById('modMessage').disabled = false;
     document.getElementById('modMessage').innerText = modMessage + ' ' + credits;    
     document.getElementById("modMessageButton").disabled = false;
 }
 
-function copyModMessage() {
-	// Allow user to copy mod message to clipboard
-	const textArea = document.getElementById('modMessage');
-	textArea.focus();
-	textArea.select();
-	document.execCommand('copy');
-	alert(`The mod message has been copied to clipboard! Please paste it into the comment of the run you are verifying.`);
+
+function addTime(){
+    let inputValue = document.getElementById("time").value;
+    var regex = /[0-9]+h [0-9]+m [0-9]+s [0-9]+ms/; // Regular expression pattern
+
+    if (!regex.test(inputValue)) {
+        alert("Wrong time format!")
+        return null // Return the function if there is a match
+    }
+
+    if(document.getElementById("totalTime").value == ""){
+        document.getElementById('totalTime').disabled = false;
+        document.getElementById("totalTime").value += inputValue.toString(); 
+    }else{
+        document.getElementById("totalTime").value += ' +\n' + inputValue.toString();
+    }
+    
+    let words = inputValue.split(" ");
+
+    for (let component of words) {
+        if (component.endsWith("h")) {
+            console.log(component);
+            let hours = parseFloat(component.split("h")[0]);
+            totaltime += hours * 3600;
+        } else if (component.endsWith("m")) {
+            console.log(component);
+            let minutes = parseFloat(component.split("m")[0]);
+            totaltime += minutes * 60;
+        } else if (component.endsWith("ms")) {
+            console.log(component);
+            let milliseconds = parseFloat(component.split("ms")[0]); 
+            totaltime += milliseconds * 0.001;
+        } else if (component.endsWith("s")) {
+            console.log(component);
+            let seconds = parseFloat(component.split("s")[0]);
+            totaltime += seconds;   
+        }
+    }
 }
+
+function undoAdd(){
+    let words = lastTime.split(" ");
+
+    for (let component of words) {
+        if (component.endsWith("h")) {
+        let hours = parseFloat(component.split("h")[0]);
+        totaltime -= hours * 3600;
+    } else if (component.endsWith("m")) {
+        let minutes = parseFloat(component.split("m")[0]);
+        totaltime -= minutes * 60;
+    } else if (component.endsWith("ms")) {
+        let milliseconds = parseFloat(component.split("ms")[0]);
+        totaltime -= milliseconds * 0.001;
+    } else if (component.endsWith("s")) {
+        let seconds = parseFloat(component.split("s")[0]);
+        totaltime -= seconds;
+        }
+    }
+    deleteLastLine();
+
+}
+
+function deleteLastLine() {
+    var textarea = document.getElementById("totalTime");
+    var lines = textarea.value.split("\n");
+
+    if (lines.length > 0) {
+      lines.pop(); // Remove the last line
+      textarea.value = lines.join("\n");
+      textarea.value = textarea.value.slice(0, -2);
+    }
+}
+function reset(){
+    document.getElementById("totalTime").value = "";
+    document.getElementById('totalTime').disabled = true;
+    document.getElementById("copied").style.display = "none";
+}
+
+
+
+function copyToClipboard() {
+    document.getElementById("copied").style.display = "block";
+    let content = totaltime;
+    content *= 1000;
+    console.log(content)
+    navigator.clipboard.writeText(parseInt(content.toFixed(3).toString()))
+      .then(() => {
+        document.getElementById("copied").textContent = 'Copied to clipboard: '+ parseInt(content);
+      })
+      .catch((error) => {
+        console.error('Failed to copy to clipboard:', error);
+      });
+  }
+
+  
 
 const validateFPS = (event) => {
     // If framerate is invalid, show an error message and disable start and end frame fields
