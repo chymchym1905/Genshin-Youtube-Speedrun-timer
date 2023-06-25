@@ -51,7 +51,7 @@ function compute() {
     document.getElementById("modMessageButton").disabled = false;
 }
 
-
+//addtime
 function addTime(){
     let inputValue = document.getElementById("time").value;
     var regex = /[0-9]+h [0-9]+m [0-9]+s [0-9]+ms/; // Regular expression pattern
@@ -87,7 +87,7 @@ function addTime(){
     }
     console.log(totaltime);
 }
-
+//undo
 function undoAdd(){
     let words = lastTime.split(" ");
 
@@ -110,6 +110,7 @@ function undoAdd(){
 
 }
 
+//Modify text area
 function deleteLastLine() {
     var textarea = document.getElementById("totalTime");
     var lines = textarea.value.split("\n");
@@ -121,6 +122,7 @@ function deleteLastLine() {
     }
 }
 
+//reset
 function reset(){
     document.getElementById("totalTime").value = "";
     document.getElementById('totalTime').disabled = true;
@@ -129,7 +131,7 @@ function reset(){
 }
 
 
-
+//copy
 function copyToClipboard() {
     document.getElementById("copied").style.display = "block";
     let content = totaltime;
