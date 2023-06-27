@@ -1,6 +1,6 @@
 // const Big = require('big.js');
 var totaltime = new Big(0.0); //time to be copied, in integer
-var lastTime = 0; //the lastest result after compute time
+var lastTime = []; //the lastest result after compute time
 
 function compute() {
 
@@ -42,17 +42,17 @@ function compute() {
 
     // Show the time and mod message in the DOM
     let finalTime = hours.toString() + 'h ' + minutes.toString() + 'm ' + seconds.toString() + 's ' + milliseconds.toString() + 'ms';
-    let modMessage = `Mod Message: Time starts at ${parseFloat(startFrame).toFixed(3)} and ends at ${parseFloat(endFrame).toFixed(3)} at ${frameRate} fps to get a final time of ${finalTime}.`;
-    let credits = `Retimed using [yt-frame-timer](https://slashinfty.github.io/yt-frame-timer)`;
-    lastTime = finalTime;
+
     document.getElementById('time').value = finalTime;
-    document.getElementById('modMessage').disabled = false;
-    document.getElementById('modMessage').innerText = modMessage + ' ' + credits;    
-    document.getElementById("modMessageButton").disabled = false;
 }
 
 //addtime
 function addTime(){
+    var hours;
+    var minutes;
+    var milliseconds;
+    var seconds;
+
     let inputValue = document.getElementById("time").value;
     var regex = /[0-9]+h [0-9]+m [0-9]+s [0-9]+ms/; // Regular expression pattern
 
@@ -72,40 +72,32 @@ function addTime(){
 
     for (let component of words) {
         if (component.endsWith("h")) {
-          let hours = new Big(component.split("h")[0]);
-          totaltime = totaltime.plus(hours.times(3600));
+          hours = new Big(component.split("h")[0]);
         } else if (component.endsWith("m")) {
-          let minutes = new Big(component.split("m")[0]);
-          totaltime = totaltime.plus(minutes.times(60));
+          minutes = new Big(component.split("m")[0]);
         } else if (component.endsWith("ms")) {
-          let milliseconds = new Big(component.split("ms")[0]);
-          totaltime = totaltime.plus(milliseconds.times(0.001));
+          milliseconds = new Big(component.split("ms")[0]);
         } else if (component.endsWith("s")) {
-          let seconds = new Big(component.split("s")[0]);
-          totaltime = totaltime.plus(seconds);
+          seconds = new Big(component.split("s")[0]);
         }
     }
+    // let res = new Big(0.0)
+    // res = hours.times(3600).plus(minutes.times(60)).plus(milliseconds.times(0.001)).plus(seconds)
+    lastTime.push(new Big(hours.times(3600).plus(minutes.times(60)).plus(milliseconds.times(0.001)).plus(seconds)));
+    totaltime = totaltime.plus(hours.times(3600).plus(minutes.times(60)).plus(milliseconds.times(0.001)).plus(seconds));
     console.log(totaltime);
 }
 //undo
 function undoAdd(){
-    let words = lastTime.split(" ");
-
-    for (let component of words) {
-        if (component.endsWith("h")) {
-            let hours = new Big(component.split("h")[0]);
-            totaltime = totaltime.minus(hours.times(3600));
-        } else if (component.endsWith("m")) {
-            let minutes = new Big(component.split("m")[0]);
-            totaltime = totaltime.minus(minutes.times(60));
-        } else if (component.endsWith("ms")) {
-            let milliseconds = new Big(component.split("ms")[0]);
-            totaltime = totaltime.minus(milliseconds.times(0.001));
-        } else if (component.endsWith("s")) {
-            let seconds = new Big(component.split("s")[0]);
-            totaltime = totaltime.minus(seconds);
-        }
+    if(lastTime!=[]){
+        console.log(lastTime);
+        totaltime = totaltime.minus(lastTime[lastTime.length-1].toNumber());
+        removedElement = lastTime.pop();
+        removedElement = null;
+    }else if (lastTime==[]){
+        console.log("No number to add")
     }
+    console.log(totaltime);
     deleteLastLine();
 
 }
@@ -146,11 +138,6 @@ function copyToClipboard() {
       });
   }
 
-const assign = (event) => {
-    lastTime = event.target.value;
-}
-
-  
 
 const validateFPS = (event) => {
     // If framerate is invalid, show an error message and disable start and end frame fields
