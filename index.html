@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -42,13 +42,13 @@
       <input type="text" id="endobj" style='width:100%' onchange='parseForTime(event)' />
     </p>
     <h3 id="video-time">Video Time</h3>
-    <button id="computeButton" onclick="compute()">Compute time</button>&nbsp;<input type="text" id="time" size="20" />
+    <button id="computeButton" onclick="compute()">Compute time</button>&nbsp;<input title="result" type="text" id="time" size="20" />
 
 
     
     <table style="left:0; transform: translateX(-2.5%);">
       <td rowspan="2" style="border-color: transparent;">
-        <textarea id="totalTime" cols="40" rows="8" disabled readonly></textarea>
+        <textarea title="textarea1" id="totalTime" cols="40" rows="8" disabled readonly></textarea>
       </td>
 
       <td style="border-color: transparent;">

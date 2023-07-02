@@ -89,12 +89,12 @@ function addTime(){
 }
 //undo
 function undoAdd(){
-    if(lastTime!=[]){
+    if(lastTime.length>0){
         console.log(lastTime);
         totaltime = totaltime.minus(lastTime[lastTime.length-1].toNumber());
         removedElement = lastTime.pop();
         removedElement = null;
-    }else if (lastTime==[]){
+    }else if (lastTime.length==0){
         console.log("No number to add")
     }
     console.log(totaltime);
